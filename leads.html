@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member List</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
+    
+  
+</head>
+<body onload="doShowAll();">
+
+    <div class="container" >
+        <h1>
+            Member List Data 
+        </h1>
+    </div>
+    <br>
+   <table class="table table-bordered table-hover table-sm">
+        <thead>
+           
+        </thead>
+        <tbody id="tblbody">
+        </tbody>
+   </table>
+    
+   
+</body>
+</html>
+
+<script type="text/javascript">
+
+var customerArray = null
+function doShowAll() {
+
+var key = "";
+
+    if (customerArray == null) {
+    customerArray = [];
+    for (i = 0; i < localStorage.length; i++) {
+
+      key = localStorage.key(i);
+      let data = JSON.parse(localStorage.getItem(key));
+        customerArray.push(localStorage.getItem(key))
+    }
+}
+
+}
+    
+bindjsondata();
+
+
+function bindjsondata() {
+
+    document.getElementById('tblbody').innerHTML ="";
+    if (customerArray != null){
+    customerArray.forEach(function(item,index)
+    {
+        item = JSON.parse(item);
+        var btnEditId = "btnedit" + item.id;
+        var btnDeleteId = "btndelete" + item.id;
+        var tableRow = "<tr id='" + item.id + "'   data-id='" + item.id + "'   data-firstName='" + item.firstName + "' data-lastName='" + item.lastName + "' data-phoneNumber='" + item.phoneNumber + "' data-email='" + item.email + "'data-password'" + item.password + "' data-address='" + item.address + "'>"
+        + "<td class='td-data'>" + item.id + "</td>"
+        + "<td class='td-data'>" + item.firstName + "</td>" 
+        + "<td class='td-data'>" + item.lastName + "</td>"
+        + "<td class='td-data'>" + item.phoneNumber + "</td>"
+        + "<td class='td-data'>" + item.email + "</td>"
+        + "<td class='td-data'>" + item.address + "</td>"
+        + "<td class='td-data'>" +
+        "<button id='" + btnEditId + "' class='btn btn-info btn-xs btn-editcustomer' onclick='showEditRow(" + item.id + ")'><i class='fa fa-pencil' aria-hidden='true'></i>Edit</button>" +
+        "<button id='" + btnDeleteId + "' class='btn btn-danger btn-xs btn-deleteCustomer' onclick='deleteCustomerRow(" + item.id + ")'><i class='fa fa-trash' aria-hidden='true'>Delete</button>"
+        + "</td>"
+        + "</tr>";
+     document.getElementById('tblbody').innerHTML += tableRow;
+    })
+    }
+
+
+    var AddRow = "<tr>"
+            + "<td class='td-data'></td>"
+            + "<td class='td-data'><input type='text' id='txtfirstName' placeholder='First Name..'></td>"
+            + "<td class='td-data'><input type='text' id='txtlastName' placeholder='Last Name..'></td>"
+            + "<td class='td-data'><input type='text' id='txtphoneNumber' placeholder='Phone Number..'></td>"
+            + "<td class='td-data'><input type='email' id='txtemail' placeholder='email..'></td>"
+            + "<td class='td-data'><input type='text' id='txtaddress' placeholder='Address..'></td>"
+            + "<td class='td-data'>" + "<button id= 'btnaddcustomer' onclick='addcustomer()' class='btn btn-success'> <i class='fa fa-plus-circle' aria-hidden='true'></i>Add</button>"+"</td>"
+            + "</tr>";
+        document.getElementById('tblbody').innerHTML += AddRow;
+    }
+
+    function CreateUniqueCustomerid() {
+        const id = Date.now();
+        return id;
+    }
+
+
+    function addcustomer() {
+        var id = CreateUniqueCustomerid();
+        var firstName = document.getElementById("txtfirstName").value;
+        if (!firstName) {
+            alert('Please enter your First Name!')
+            return false;
+        }
+        var lastName = document.getElementById("txtlastName").value;
+        if (!lastName) {
+            alert('Please enter your Last Name!')
+            return false;
+        }
+        
+        
+        
+        var phoneNumber = document.getElementById("txtphoneNumber").value;
+        if (!phoneNumber) {
+            alert('Please Enter your Phone Number')
+            return false;
+        }
+
+        var phoneNumberFilter = /^\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/;
+        if(!phoneNumberFilter.test(phoneNumber)) {
+        alert('please enter a valid phone Number!');
+        return false;
+        }
+
+        var email = document.getElementById("txtemail").value;
+        if (!email) {
+            alert('Please enter email!')
+            return false;
+        }
+        var emailfilter = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if (!emailfilter.test(email)) {
+            alert('Please enter a valid email address!');
+            return false;
+        }
+
+        var address = document.getElementById("txtaddress").value;
+        if (!address) {
+            alert('Please enter address!')
+            return false;
+        }
+
+        customerarray.push(customer);
+        document.getElementById('txtfirstName').value = "";
+        document.getElementById('txtlastName').value = "";
+        document.getElementById('txtphoneNumber').value = "";
+        document.getElementById('txtemail').value = "";
+        document.getElementById('txtaddress').value = "";
+
+        
+        bindjsondata();
+    };
+    function showEditRow(id) {
+
+        var CustomerRow = document.getElementById(id);
+
+        var data = CustomerRow.querySelectorAll(".td-data");
+
+        var id = data[0].innerHTML;
+        var firstName = data[1].innerHTML
+        var lastName = data[2].innerHTML;
+        var phoneNumber = data[3].innerHTML;
+        var email = data[4].innerHTML;
+        var address = data[5].innerHTML;
+
+        data[0].innerHTML = '<input name="txtupdate_id"  disabled id="txtupdate_id" value="' + id + '"/>';
+        data[1].innerHTML = '<input name="txtupdate_firstName" id="txtupdate_firstName" value="' + firstName + '"/>';
+        data[2].innerHTML = '<input name="txtupdate_lastName" id="txtupdate_lastName" value="' + lastName + '"/>';
+        data[3].innerHTML = '<input name="txtupdate_phoneNumber" id="txtupdate_phoneNumber" value="' + phoneNumber + '"/>';
+        data[4].innerHTML = '<input name="txtupdate_email" id="txtupdate_email" value="' + email + '"/>';
+        data[5].innerHTML = '<input name="txtupdate_address" id="txtupdate_address" value="' + address + '"/>';
+
+
+        data[6].innerHTML =
+            "<button class='btn btn-primary btn-xs btn-updateCustomer' onclick='updateCustomers(" + id + ")'>" +
+            "<i class='fa fa-pencil' aria-hidden='true'></i>Update</button>"
+            + "<button class='btn btn-warning btn-xs btn-cancelupdate' onclick='cancelUpdate(" + id + ")'><i class='fa fa-times' aria-hidden='true'></i>Cancel</button>"
+            + "<button class='btn btn-danger btn-xs btn-deleteCustomer' onclick='deleteCustomerRow(" + id + ")'>"
+            + "<i class='fa fa-trash' aria-hidden='true'></i>Delete</button>"
+        }
+        function cancelUpdate(id) {
+
+
+        var btneditId = "btnedit" + id;
+        var btndeleteId = "btndelete" + id;
+
+        var CustomerRow = document.getElementById(id); 
+        var data = CustomerRow.querySelectorAll(".td-data");
+        var firstName = CustomerRow.getAttribute("data-firstName");
+        var lastName = CustomerRow.getAttribute("data-lastName");
+        var phoneNumber = CustomerRow.getAttribute("data-phoneNumber");
+        var address = CustomerRow.getAttribute("data-address");
+        var email = CustomerRow.getAttribute("data-email");
+
+        data[0].innerHTML = id;
+        data[1].innerHTML = firstName;
+        data[2].innerHTML = lastName;
+        data[3].innerHTML = phoneNumber;
+        data[4].innerHTML = email;
+        data[5].innerHTML = address;
+
+
+        var actionbtn = "<button id='" + btneditId + "' class='btn btn-info btn-xs btn-editcustomer' onclick='showEditRow(" + id + ")'><i class='fa fa-pencil' aria-hidden='true'></i>Edit</button>" +
+            "<button id='" + btndeleteId + "' class='btn btn-danger btn-xs btn-deleteCustomer' onclick='deleteCustomerRow(" + id + ")'><i class='fa fa-trash' aria-hidden='true'>Delete</button>"
+        data[6].innerHTML = actionbtn;
+        }
+        function deleteCustomerRow(id) {
+        customerArray.splice(customerArray.findIndex(a => a.id === id), 1)
+        bindjsondata();
+        }
+        function updateCustomers(id) {
+        var CustomerRow = document.getElementById(id);
+        var data = CustomerRow.querySelectorAll(".td-data");
+
+        var firstName = data[1].querySelector("#txtupdate_firstName").value;
+        var lastName = data[2].querySelector("#txtupdate_lastName").value;
+        var phoneNumber = data[3].querySelector("#txtupdate_phoneNumber").value;
+        var email = data[4].querySelector("#txtupdate_email").value;
+        var address = data[5].querySelector("#txtupdate_address").value;
+
+        var customerObJ = customerArray.filter((x) => x.id == id).pop();
+        if (customerObJ != null) {
+            customerObJ.firstName = firstName;
+            customerObJ.lastName = lastName;
+            customerObJ.phoneNumber = phoneNumber;
+            customerObJ.email = email;
+            customerObJ.address = address;
+        }
+        bindjsondata();
+        }
+    
+
+    
+    </script>

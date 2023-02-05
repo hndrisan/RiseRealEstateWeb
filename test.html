@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member List</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
+  
+  
+</head>
+<body>
+    <script src="jquery.js"></script>
+    <script>
+     $(function doShowAll() {
+    console.log( "ready!" );
+});
+   </script>
+    
+    <div class="container" >
+        <h1>
+            Member List Data 
+        </h1>
+    </div>
+    <br>
+  
+    
+
+   <form action="input">
+    
+    <button type="submit" onclick="doshowall()">show data</button>
+   </form>
+   
+</body>
+</html>
+
+<script type="text/javascript">
+
+function doShowAll() {
+
+var key = "";
+var list = "<tr><th>firstName</th><th>lastName</th><th>Phone Number</th><th>Email</th><th>Address</th>\n";
+var i = 0;
+
+if (localStorage.length == 0) {
+    list += "<tr><td><i>empty</i></td><td><i>empty</i></td><td><i>empty</i></td><td><i>empty</i></td><td><i>empty</i></</tr>\n";
+  } else {
+    for (i = 0; i < localStorage.length; i++) {
+
+      key = localStorage.key(i);
+      let data = JSON.parse(localStorage.getItem(key));
+
+      list += "<tr><td>" + key + "</td>\n<td>" +
+        data[0] + "</td>\n<td>" + data[1] + "</td>\n<td>" + data[2] + "</td>\n<td>" + data[3] + "</td></tr>\n";
+//			list += "<tr><td>" + key + "</td>\n<td>" +
+//			data[0] + "</td>\n<td>" + data[1] + "</td>\n<td>" + data[2] + "</td></tr>\n";
+    }
+}
+document.getElementById('list').innerHTML = list;
+
+}
+</script>
